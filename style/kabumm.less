@@ -1,0 +1,85 @@
+@import "colorschemes/pony/rarity.less";
+.c1 {color: @fg1; background-color: @bg1;}
+.c2 {color: @fg2; background-color: @bg2;}
+.c3 {color: @fg3; background-color: @bg3;}
+
+/* markros */
+.block {
+	box-shadow: 0.1em 0.2em 0.6em 0.1em @fg1;
+	margin-bottom: 4em;
+	display: block;
+	overflow: hidden;
+	.clearfix;
+	padding: 0.6em;
+}
+.clearfix {
+	overflow: hidden;
+}
+.menu {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	> li {display: inline-block}
+}
+
+/* reset */
+a img {
+	border: none;
+}
+
+a {
+	color: inherit;
+	text-decoration: underline;
+	cursor: pointer;
+	&:hover, &:focus {
+		text-decoration: none;
+	}
+}
+
+body {
+	margin: 0 auto;
+	width: 60%;
+	max-width: 54em;
+	min-width: 20em;
+	.c1;
+	font-family: sans-serif;
+}
+
+blockquote {
+	margin: 1em 1.5em 1em 0.5em;
+	padding-left: 0.5em;
+	border-left: 0.2em solid @fg2;
+}
+
+#stream {
+	padding: 0;
+	margin: 0;
+	margin-top: 4em;
+	> li {
+		.c2;
+		.block;
+		padding: 0;
+		.meta {
+			.c3;
+			position: relative;
+			padding: 0.4em 0.6em;
+			font-size: smaller;
+			.info, .actions {.menu}
+			.actions {float: right;}
+			.clearfix;
+		}
+		.body {
+			padding: 0.6em;
+			line-height: 1.2em;
+			img {
+				max-width: 100%;
+			}
+		}
+	}
+}
+
+.loading {
+	.block;
+	.c3;
+	text-align: center;
+}
