@@ -5,12 +5,14 @@ from time import mktime, time
 import argparse
 
 from flask import Flask, request, jsonify, abort, render_template
+from werkzeug.contrib.cache import SimpleCache
 
 import feedparser
 from bs4 import BeautifulSoup
 
 
 app = Flask(__name__)
+cache = SimpleCache()
 
 
 def strip_atts(s):
@@ -54,13 +56,21 @@ def parse(url):
 	}
 
 
+def cachedParse(url, timeout=5 * 60):
+	data = cache.get(url)
+	if data is None:
+		data = parse(url)
+		cache.set(url, data, timeout=timeout)
+	return data
+
+
 @app.route('/parse', methods=['GET'])
 def main():
 	if 'url' in request.values:
 		url = request.values['url']
 
 		try:
-			data = parse(url)
+			data = cachedParse(url)
 		except Exception as err:
 			print(err)
 			data = {}
