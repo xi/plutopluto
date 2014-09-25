@@ -16,7 +16,7 @@ cache = SimpleCache()
 
 
 def strip_atts(s):
-	whitelist = ['href', 'src', 'alt', 'title']
+	whitelist = ['href', 'src', 'alt', 'title', 'datetime']
 	tree = BeautifulSoup(s)
 
 	for tag in tree.find_all():
