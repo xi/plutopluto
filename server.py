@@ -97,10 +97,11 @@ def config():
 
 
 if __name__ == '__main__':
-	parser = argparse.ArgumentParser()
+	parser = argparse.ArgumentParser(description='simple feed aggregator')
 	parser.add_argument('-d', '--debug', action='store_true')
-	parser.add_argument('-c', '--config')
-	parser.add_argument('urls', metavar='url', nargs='*')
+	parser.add_argument('-c', '--config', metavar='FILE')
+	parser.add_argument('urls', metavar='URL', nargs='*',
+		help='full feed url, optionally with a {page} placeholder')
 	args = parser.parse_args()
 
 	if args.config:
@@ -110,6 +111,7 @@ if __name__ == '__main__':
 
 	if not app.config['URLS']:
 		print("Error: No urls provided")
+		parser.print_usage()
 		sys.exit(1)
 
 	app.run(app.config.get('HOST'), app.config.get('PORT'))
