@@ -1,11 +1,17 @@
-@bg1: #ADB8BF;
-@bg2: #EAEFF2;
-@bg3: #43285b;
-@fg1: #000000;
-@fg2: #6951A2;
-@fg3: #B7C1C7;
+body {
+	color: black;
+	background-color: #adb8bf;
+}
 
-.c3 {
+#stream > li {
+	color: #6951a2;
+	background-color: #eaeff2;
+}
+
+.loading, .meta {
+	color: #b7c1c7;
+	background-color: #43285B;
+
 	background: -webkit-linear-gradient(135deg, #43285b 0%,#83509f 100%);
 	background: -moz-linear-gradient(135deg, #43285b 0%,#83509f 100%);
 	background: -o-linear-gradient(135deg, #43285b 0%,#83509f 100%);
