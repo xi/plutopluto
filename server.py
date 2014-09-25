@@ -4,7 +4,7 @@ import sys
 from time import mktime, time
 import argparse
 
-from flask import Flask, request, jsonify, abort, render_template
+from flask import Flask, request, jsonify, abort
 from werkzeug.contrib.cache import SimpleCache
 
 import feedparser
@@ -90,7 +90,7 @@ def index():
 
 
 @app.route('/config', methods=['GET'])
-def  config():
+def config():
 	return jsonify({
 		'urls': app.config['URLS']
 	})
