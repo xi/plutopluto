@@ -55,27 +55,36 @@ $(document).ready(function() {
 			});
 		};
 
+		var loadNextPageLock = false;
 		var loadNextPage = function() {
-			config.urls.forEach(function(url) {
-				if (url.indexOf('{page}') >= 0) {
-					url = url.replace('{page}', page);
-				} else if (page !== 0) {
-					return;
-				}
+			if (!loadNextPageLock) {
+				loadNextPageLock = true;
 
-				$.ajax('/parse', {
-					data: {url: url},
-					success: function(data) {
-						entries = entries.concat(data.entries);
-
-						// now that we have entries, we can show some
-						if ($('#stream').children().length === 0) {
-							loadMore();
-						}
+				config.urls.forEach(function(url) {
+					if (url.indexOf('{page}') >= 0) {
+						url = url.replace('{page}', page);
+					} else if (page !== 0) {
+						return;
 					}
+
+					$.ajax('/parse', {
+						data: {url: url},
+						success: function(data) {
+							entries = entries.concat(data.entries);
+
+							// now that we have entries, we can show some
+							if ($('#stream').children().length === 0) {
+								loadMore();
+							}
+
+							// ideally we would wait until all requests have finished
+							// but this is only a simple optimisation anyway
+							loadNextPageLock = false;
+						}
+					});
 				});
-			});
-			page++;
+				page++;
+			}
 		};
 
 		var loadMore = function() {
