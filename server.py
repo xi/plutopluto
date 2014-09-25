@@ -36,7 +36,8 @@ def parse(url):
 
 	for item in feed.entries:
 		d = dict()
-		d['dt'] = mktime(item['published_parsed']) if 'published_parsed'in item else int(time())
+		d['dt'] = (mktime(item['published_parsed']) if 'published_parsed' in item
+			else int(time()))
 		d['id'] = item['id']
 		d['title'] = item['title']
 		d['link'] = item['link']
