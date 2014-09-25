@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import sys
 from time import mktime, time
 import argparse
 
@@ -87,9 +88,17 @@ def  config():
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-d', '--debug', action='store_true')
-	parser.add_argument('urls', metavar='url', nargs='+')
+	parser.add_argument('-c', '--config')
+	parser.add_argument('urls', metavar='url', nargs='*')
 	args = parser.parse_args()
 
+	if args.config:
+		app.config.from_pyfile(args.config)
 	app.debug = args.debug
-	app.config['URLS'] = args.urls
-	app.run()
+	app.config['URLS'] = args.urls + app.config.get('URLS', [])
+
+	if not app.config['URLS']:
+		print("Error: No urls provided")
+		sys.exit(1)
+
+	app.run(app.config.get('HOST'), app.config.get('PORT'))
