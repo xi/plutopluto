@@ -7,7 +7,7 @@ from setuptools.command.install_lib import install_lib
 
 setup(
 	name='plutopluto',
-	version='1.0.0',
+	version='1.0.1',
 	description="simple feed aggregator",
 	long_description=open('README.rst').read(),
 	url='https://github.com/xi/plutopluto',
