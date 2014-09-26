@@ -17,6 +17,8 @@ cache = SimpleCache()
 
 
 def strip_atts(s):
+	"""Strip possibly dangerous HTML attributes."""
+
 	whitelist = ['href', 'src', 'alt', 'title', 'datetime']
 	tree = BeautifulSoup(s)
 
@@ -31,6 +33,8 @@ def strip_atts(s):
 
 
 def parse(url):
+	"""Get feed and convert to JSON."""
+
 	feed = feedparser.parse(url)
 
 	def _parse_item(item):
