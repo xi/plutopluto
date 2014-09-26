@@ -13,18 +13,7 @@ setup(
 	url='https://github.com/xi/plutopluto',
 	author='Tobias Bengfort',
 	author_email='tobias.bengfort@posteo.de',
-	py_modules=['plutopluto'],
-	data_files=[
-		('', ['index.html']),
-		('static', [
-			'static/color.css',
-			'static/favicon.ico',
-			'static/jqlite.js',
-			'static/mustache.js',
-			'static/plutopluto.css',
-			'static/plutopluto.js',
-		]),
-	],
+	packages=['plutopluto'],
 	include_package_data=True,
 	install_requires=[
 		'argparse',
