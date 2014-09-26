@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import os
 from time import mktime, time
 import argparse
 
@@ -83,7 +84,7 @@ def main():
 
 @app.route('/', methods=['GET'])
 def index():
-	with open('index.html') as fh:
+	with open(os.path.join(app.root_path, 'index.html')) as fh:
 		html = fh.read()
 
 	return html
@@ -105,7 +106,7 @@ if __name__ == '__main__':
 	args = parser.parse_args()
 
 	if args.config:
-		app.config.from_pyfile(args.config)
+		app.config.from_pyfile(os.path.abspath(args.config))
 	app.debug = args.debug
 	app.config['URLS'] = args.urls + app.config.get('URLS', [])
 
