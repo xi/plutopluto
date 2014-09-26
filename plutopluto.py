@@ -67,7 +67,7 @@ def cachedParse(url, timeout=5 * 60):
 
 
 @app.route('/parse', methods=['GET'])
-def main():
+def _parse():
 	if 'url' in request.values:
 		url = request.values['url']
 
