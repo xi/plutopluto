@@ -33,9 +33,7 @@ def strip_atts(s):
 def parse(url):
 	feed = feedparser.parse(url)
 
-	entries = []
-
-	for item in feed.entries:
+	def _parse_item(item):
 		d = dict()
 		d['dt'] = (mktime(item['published_parsed']) if 'published_parsed' in item
 			else int(time()))
@@ -50,11 +48,11 @@ def parse(url):
 			d['content'] = strip_atts(unicode(head) + ' ' + unicode(img))
 		else:
 			d['content'] = strip_atts(item['description'])
-		entries.append(d)
+		return d
 
 	return {
 		'url': url,
-		'entries': entries,
+		'entries': map(_parse_item, feed.entries),
 	}
 
 
@@ -85,9 +83,7 @@ def _parse():
 @app.route('/', methods=['GET'])
 def index():
 	with open(os.path.join(app.root_path, 'index.html')) as fh:
-		html = fh.read()
-
-	return html
+		return fh.read()
 
 
 @app.route('/config', methods=['GET'])
