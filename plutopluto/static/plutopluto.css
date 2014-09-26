@@ -2,12 +2,12 @@ a img {
 	border: none;
 }
 
-a:link {
+a {
 	color: inherit;
 	text-decoration: underline;
 }
 
-a:link:hover, a:link:focus {
+a:hover, a:focus {
 	text-decoration: none;
 }
 

@@ -1,3 +1,12 @@
+1.0.2 (unreleased)
+------------------
+
+Bugs
+````
+
+-   Fix visited link color.
+
+
 1.0.1
 -----
 
