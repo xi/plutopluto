@@ -97,7 +97,7 @@ def config():
 	})
 
 
-if __name__ == '__main__':
+def main():
 	parser = argparse.ArgumentParser(description='simple feed aggregator')
 	parser.add_argument('-d', '--debug', action='store_true')
 	parser.add_argument('-c', '--config', metavar='FILE')
@@ -116,3 +116,7 @@ if __name__ == '__main__':
 		sys.exit(1)
 
 	app.run(app.config.get('HOST'), app.config.get('PORT'))
+
+
+if __name__ == '__main__':
+	main()

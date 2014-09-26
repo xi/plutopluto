@@ -1,0 +1,9 @@
+include README.rst
+include example.cfg
+include index.html
+include static/color.css
+include static/favicon.ico
+include static/jqlite.js
+include static/mustache.js
+include static/plutopluto.css
+include static/plutopluto.js
