@@ -77,7 +77,7 @@ def _parse():
 			data = cachedParse(url)
 		except Exception as err:
 			app.logger.warning('%s: %s' % (url, err))
-			data = {}
+			abort(500)
 
 		return jsonify(data)
 	else:
