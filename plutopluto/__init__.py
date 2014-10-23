@@ -41,17 +41,17 @@ def parse(url):
 		d = dict()
 		d['dt'] = (mktime(item['published_parsed']) if 'published_parsed' in item
 			else int(time()))
-		d['id'] = item['id']
-		d['title'] = item['title']
-		d['link'] = item['link']
-		d['source'] = feed.feed['title']
+		d['id'] = item.get('id')
+		d['title'] = item.get('title')
+		d['link'] = item.get('link')
+		d['source'] = feed.feed.get('title')
 		if 'gdata.youtube' in url:
-			tree = BeautifulSoup(item['description'])
+			tree = BeautifulSoup(item.get('description'))
 			head = tree.find_all('a')[1]
 			img = tree.find_all('a')[0]
 			d['content'] = strip_atts(unicode(head) + ' ' + unicode(img))
 		else:
-			d['content'] = strip_atts(item['description'])
+			d['content'] = strip_atts(item.get('description'))
 		return d
 
 	return {
