@@ -37,10 +37,13 @@ def parse(url):
 
 	feed = feedparser.parse(url)
 
-	def _parse_item(item):
+	def _parse_item(args):
+		i, item = args
 		d = dict()
-		d['dt'] = (mktime(item['published_parsed']) if 'published_parsed' in item
-			else int(time()))
+		if 'published_parsed' in item:
+			d['dt'] = mktime(item['published_parsed'])
+		else:
+			d['dt'] = int(time()) - i  # - i to preserve sort order
 		d['id'] = item.get('id')
 		d['title'] = item.get('title')
 		d['link'] = item.get('link')
@@ -56,7 +59,7 @@ def parse(url):
 
 	return {
 		'url': url,
-		'entries': map(_parse_item, feed.entries),
+		'entries': map(_parse_item, enumerate(feed.entries)),
 	}
 
 
