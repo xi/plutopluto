@@ -69,7 +69,7 @@ and ``URLS`` in a separate configuration file using ``plutopluto --config
 FILE``.  See ``example.cfg`` for an example.
 
 Some options can be passed to plutopluto directly. See ``plutopluto --help``.
-If defined, they take precedence over thos from the config file.
+If defined, they take precedence over those from the config file.
 
 Extend/Hack
 -----------
