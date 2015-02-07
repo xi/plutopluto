@@ -108,8 +108,16 @@ def main():
 		help='full feed url, optionally with a {page} placeholder')
 	args = parser.parse_args()
 
+	config_name = '.plutopluto.cfg'
+	local_config = os.path.abspath(config_name)
+	home_config = os.path.expanduser('~/' + config_name)
+
 	if args.config:
 		app.config.from_pyfile(os.path.abspath(args.config))
+	elif os.path.exists(local_config):
+		app.config.from_pyfile(local_config)
+	elif os.path.exists(home_config):
+		app.config.from_pyfile(home_config)
 	app.debug = args.debug
 	app.config['URLS'] = args.urls + app.config.get('URLS', [])
 

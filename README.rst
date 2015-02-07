@@ -66,7 +66,9 @@ Configuration
 
 You can configure all `flask related options`_ as well as ``HOST``, ``PORT``
 and ``URLS`` in a separate configuration file using ``plutopluto --config
-FILE``.  See ``example.cfg`` for an example.
+FILE``.  See ``example.cfg`` for an example.  If no configurations is provided,
+the file ``.plutopluto.cfg`` is tried, first in the current folder, then in
+home.
 
 Some options can be passed to plutopluto directly. See ``plutopluto --help``.
 If defined, they take precedence over those from the config file.
