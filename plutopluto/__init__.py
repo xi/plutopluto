@@ -53,6 +53,8 @@ def parse(url):
 			head = tree.find_all('a')[1]
 			img = tree.find_all('a')[0]
 			d['content'] = strip_atts(unicode(head) + ' ' + unicode(img))
+		elif 'content' in item:
+			d['content'] = strip_atts(item['content'][0]['value'])
 		else:
 			d['content'] = strip_atts(item.get('description'))
 		return d
