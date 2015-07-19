@@ -1,3 +1,10 @@
+1.1.0
+-----
+
+-   Adapt to changed youtube API.
+-   Search for config in more places, e.g. ``~/.plutopluto.cfg``.
+
+
 1.0.2
 -----
 
