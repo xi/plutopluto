@@ -3,7 +3,7 @@
 var $ = function(query) {
 	var ob = {};
 
-	if (query == document) {
+	if (query == document || query.ELEMENT_NODE) {
 		ob.target = query;
 	} else if (query.trim()[0] === '<') {
 		var div = document.createElement('div');
