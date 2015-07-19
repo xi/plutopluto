@@ -35,6 +35,9 @@ var $ = function(query) {
 	ob.append = function(element) {
 		ob.target.appendChild(element.target);
 	};
+	ob.replace = function(element) {
+		ob.target.parentNode.replaceChild(element.target, ob.target);
+	}
 
 	return ob;
 };
