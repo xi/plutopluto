@@ -107,4 +107,13 @@ $(document).ready(function() {
 		// load initial content
 		loadNextPage();
 	}});
+
+	// youtube video embedding
+	$(document).on('click', function(event) {
+		if (event.target.alt.match(/^https:\/\/www\.youtube/)) {
+			var iframe = $('<iframe class="youtube">');
+			iframe.target.src = event.target.alt;
+			$(event.target).replace(iframe);
+		}
+	});
 });

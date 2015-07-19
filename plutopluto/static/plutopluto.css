@@ -64,3 +64,9 @@ body {
 	color: white;
 	background: black;
 }
+
+iframe.youtube,
+img[alt^="https://www.youtube"] {
+	width: 480px;
+	height: 360px;
+}
