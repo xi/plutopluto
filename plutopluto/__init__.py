@@ -48,11 +48,12 @@ def parse(url):
 		d['title'] = item.get('title')
 		d['link'] = item.get('link')
 		d['source'] = feed.feed.get('title')
-		if 'gdata.youtube' in url:
-			tree = BeautifulSoup(item.get('description'))
-			head = tree.find_all('a')[1]
-			img = tree.find_all('a')[0]
-			d['content'] = strip_atts(unicode(head) + ' ' + unicode(img))
+		if 'youtube' in url:
+			template = u'<img alt="%s" src="%s" />\n<div>%s</div>'
+			d['content'] = strip_atts(template % (
+				item['media_content'][0]['url'],
+				item['media_thumbnail'][0]['url'],
+				item['media_description']))
 		elif 'content' in item:
 			d['content'] = strip_atts(item['content'][0]['value'])
 		else:
