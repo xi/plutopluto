@@ -1,13 +1,22 @@
 #!/usr/bin/env python
 
+import os
+import re
 from setuptools import setup
+
+DIRNAME = os.path.abspath(os.path.dirname(__file__))
+rel = lambda *parts: os.path.abspath(os.path.join(DIRNAME, *parts))
+
+README = open(rel('README.rst')).read()
+INIT = open(rel('plutopluto', '__init__.py')).read()
+VERSION = re.search("__version__ = '([^']+)'", INIT).group(1)
 
 
 setup(
 	name='plutopluto',
-	version='1.1.0',
+	version=VERSION,
 	description="simple feed aggregator",
-	long_description=open('README.rst').read(),
+	long_description=README,
 	url='https://github.com/xi/plutopluto',
 	author='Tobias Bengfort',
 	author_email='tobias.bengfort@posteo.de',

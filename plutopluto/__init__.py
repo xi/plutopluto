@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+__version__ = '1.1.0'
+
 import sys
 import os
 from time import mktime, time
@@ -105,6 +107,7 @@ def config():
 
 def main():
 	parser = argparse.ArgumentParser(description='simple feed aggregator')
+	parser.add_argument('--version', '-V', action='version', version=__version__)
 	parser.add_argument('-d', '--debug', action='store_true')
 	parser.add_argument('-c', '--config', metavar='FILE')
 	parser.add_argument('urls', metavar='URL', nargs='*',
