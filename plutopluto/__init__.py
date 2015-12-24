@@ -31,7 +31,7 @@ def strip_atts(s):
 				l.append(attr)
 		for attr in l:
 			del tag.attrs[attr]
-	return unicode(tree)
+	return str(tree)
 
 
 def parse(url):
@@ -39,8 +39,7 @@ def parse(url):
 
 	feed = feedparser.parse(url)
 
-	def _parse_item(args):
-		i, item = args
+	def _parse_item(i, item):
 		d = dict()
 		if 'published_parsed' in item:
 			d['dt'] = mktime(item['published_parsed'])
@@ -64,7 +63,7 @@ def parse(url):
 
 	return {
 		'url': url,
-		'entries': map(_parse_item, enumerate(feed.entries)),
+		'entries': [_parse_item(i, item) for i, item in enumerate(feed.entries)],
 	}
 
 
