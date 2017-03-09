@@ -43,6 +43,8 @@ def parse(url):
 		d = dict()
 		if 'published_parsed' in item:
 			d['dt'] = mktime(item['published_parsed'])
+		elif 'updated_parsed' in item:
+			d['dt'] = mktime(item['updated_parsed'])
 		else:
 			d['dt'] = int(time()) - i  # - i to preserve sort order
 		d['id'] = item.get('id')
