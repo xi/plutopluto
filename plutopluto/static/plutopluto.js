@@ -43,7 +43,7 @@ $(document).ready(function() {
 		var bottomDistance = function() {
 			var doc = document.body.scrollHeight;
 			var screen = window.innerHeight;
-			var position = document.body.scrollTop;
+			var position = document.body.scrollTop || window.scrollY;
 			return doc - position - screen;
 		};
 
