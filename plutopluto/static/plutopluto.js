@@ -101,7 +101,7 @@ $(document).ready(function() {
 			if (bottomDistance() < 4000) {
 				loadMore();
 			}
-		});
+		}, {passive: true});
 		$('.loading').click(loadMore);
 
 		// load initial content
