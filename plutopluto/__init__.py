@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import functools
 import os
 import sys
 from time import mktime
@@ -12,12 +13,10 @@ from flask import Flask
 from flask import request
 from flask import jsonify
 from flask import abort
-from werkzeug.contrib.cache import SimpleCache
 
 __version__ = '1.2.0'
 
 app = Flask(__name__)
-cache = SimpleCache()
 
 
 def strip_atts(s):
@@ -36,6 +35,7 @@ def strip_atts(s):
     return str(tree)
 
 
+@functools.lru_cache
 def parse(url):
     """Get feed and convert to JSON."""
 
@@ -71,21 +71,13 @@ def parse(url):
     }
 
 
-def cachedParse(url, timeout=5 * 60):
-    data = cache.get(url)
-    if data is None:
-        data = parse(url)
-        cache.set(url, data, timeout=timeout)
-    return data
-
-
 @app.route('/parse', methods=['GET'])
 def _parse():
     if 'url' in request.values:
         url = request.values['url']
 
         try:
-            data = cachedParse(url)
+            data = parse(url)
         except Exception as err:
             app.logger.warning('%s: %s' % (url, err))
             abort(500)
