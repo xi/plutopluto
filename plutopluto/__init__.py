@@ -19,19 +19,50 @@ __version__ = '1.2.0'
 app = Flask(__name__)
 
 
-def strip_atts(s):
-    """Strip possibly dangerous HTML attributes."""
+def clean_html(s):
+    """Strip possibly dangerous HTML."""
 
-    whitelist = ['href', 'src', 'alt', 'title', 'datetime']
+    allowed_tags = [
+        'p',
+        'a',
+        'ul',
+        'ol',
+        'li',
+        'blockquote',
+        'em',
+        'strong',
+        'img',
+        'video',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'pre',
+        'code',
+        'hr',
+        'table',
+        'tr',
+        'td',
+        'th',
+        'details',
+        'summary',
+    ]
+    allowed_attrs = ['href', 'src', 'alt', 'title']
+
     tree = BeautifulSoup(s)
 
     for tag in tree.find_all():
-        l = []
-        for attr in tag.attrs:
-            if attr not in whitelist:
-                l.append(attr)
-        for attr in l:
-            del tag.attrs[attr]
+        if tag.name not in allowed_tags:
+            if tag.name in ['script']:
+                tag.extract()
+            else:
+                tag.hidden = True
+        else:
+            for attr in set(tag.attrs) - set(allowed_attrs):
+                del tag.attrs[attr]
+
     return str(tree)
 
 
@@ -55,14 +86,14 @@ def parse(url):
         d['source'] = feed.feed.get('title')
         if 'youtube' in url:
             template = u'<img alt="%s" src="%s" />\n<div>%s</div>'
-            d['content'] = strip_atts(template % (
+            d['content'] = clean_html(template % (
                 item['media_content'][0]['url'],
                 item['media_thumbnail'][0]['url'],
                 item['media_description']))
         elif 'content' in item:
-            d['content'] = strip_atts(item['content'][0]['value'])
+            d['content'] = clean_html(item['content'][0]['value'])
         else:
-            d['content'] = strip_atts(item.get('description'))
+            d['content'] = clean_html(item.get('description'))
         return d
 
     return {
