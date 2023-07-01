@@ -6,27 +6,24 @@
 	<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src *">
 	<title>plutopluto</title>
 	<link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico"/>
-	<script src="/static/jqlite.js" type="text/javascript" ></script>
-	<script src="/static/mustache.js" type="text/javascript" ></script>
-	<script src="/static/plutopluto.js" type="text/javascript" ></script>
 	<link rel="stylesheet" href="/static/style.css" type="text/css" />
 </head>
 
 <body>
-	<ul id="stream" class="posts">
-		<li class="post">
-			<article>
-				<header>
-					<a class="source u-bold" href="{{link}}" title="{{title}}">{{source}}</a>
-					<span class="meta">
-						&middot; Posted on <a href="{{link}}">{{#formatDate}}{{dt}}{{/formatDate}}</a>
-					</span>
-				</header>
-				{{{content}}}
-			</article>
-		</li>
-	</ul>
-	<span class="loading" title="click here if nothing happens">loading...</span>
+	<template>
+		<article>
+			<header>
+				<a class="source u-bold" href="{{link}}" title="{{title}}">{{source}}</a>
+				<span class="meta">
+					&middot; Posted on <a href="{{link}}">{{dt}}</a>
+				</span>
+			</header>
+			{{{content}}}
+		</article>
+	</template>
+	<ul id="stream" class="posts"></ul>
+	<button type="button" class="loading" title="click here if nothing happens">loading…</button>
+	<script src="/static/plutopluto.js" type="module"></script>
 </body>
 
 </html>
