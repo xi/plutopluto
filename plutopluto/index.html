@@ -9,20 +9,21 @@
 	<script src="/static/jqlite.js" type="text/javascript" ></script>
 	<script src="/static/mustache.js" type="text/javascript" ></script>
 	<script src="/static/plutopluto.js" type="text/javascript" ></script>
-	<link rel="stylesheet" href="/static/plutopluto.css" type="text/css" />
-	<link rel="stylesheet" href="/static/color.css" type="text/css" />
+	<link rel="stylesheet" href="/static/style.css" type="text/css" />
 </head>
 
 <body>
-	<ul id="stream">
-		<li>
-			<div class="meta">
-				{{#formatDate}}{{dt}}{{/formatDate}}
-				<a class="source" href="{{link}}" title="{{title}}">{{source}}</a>
-			</div>
-			<div class="body">
+	<ul id="stream" class="posts">
+		<li class="post">
+			<article>
+				<header>
+					<a class="source u-bold" href="{{link}}" title="{{title}}">{{source}}</a>
+					<span class="meta">
+						&middot; Posted on <a href="{{link}}">{{#formatDate}}{{dt}}{{/formatDate}}</a>
+					</span>
+				</header>
 				{{{content}}}
-			</div>
+			</article>
 		</li>
 	</ul>
 	<span class="loading" title="click here if nothing happens">loading...</span>

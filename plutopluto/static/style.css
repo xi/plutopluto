@@ -1,0 +1,150 @@
+html {
+	--bg-color: #fff;
+	--bg-tint-color: #f6f6f6;
+	--fg-tint-color: #777;
+	--focus-color: #0079d3;
+	--border-color: #ccc;
+	--button-color: #aaa;
+	--button-hover-color: #bbb;
+
+	background: #dae0e6;
+	color: #222;
+	line-height: 1.5;
+}
+
+body {
+	max-inline-size: 45em;
+	margin-block: 0;
+	margin-inline: auto;
+	padding-block: 4em 1em;
+	padding-inline: 0;
+}
+
+a {
+	color: var(--focus-color);
+}
+
+h1, h2, h3, h4, h5 {
+	line-height: 1.2;
+	font-weight: 500;
+	margin-block: 0 0.3em;
+}
+
+pre {
+	font-size: 90%;
+	font-family: monospace;
+	padding: 0.5em;
+	border: 1px solid var(--border-color);
+	background-color: var(--bg-tint-color);
+	overflow: auto;
+	tab-size: 4;
+}
+
+p {
+	margin-block: 0 0.8em;
+}
+
+blockquote {
+	font-style: italic;
+	font-size: small;
+	padding-inline-start: 0.5em;
+	border-inline-start: 0.4em solid var(--border-color);
+	margin-inline-start: 0;
+}
+
+hr {
+	border: 0;
+	border-block-end: 1px solid var(--border-color);
+}
+
+#stream {
+	padding: 0;
+	margin: 0;
+}
+
+.post {
+	display: flow-root;
+	background: var(--bg-color);
+	border-radius: 4px;
+	border: 1px solid var(--border-color);
+	padding: 0.5em;
+	margin-block-end: 1em;
+}
+
+.post header {
+	margin-block-end: 0.5em;
+	font-size: small;
+}
+
+.post header a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.post header a:hover,
+.post header a:focus {
+	text-decoration: underline;
+}
+
+.post footer {
+	display: flex;
+	gap: 1em;
+	color: var(--fg-tint-color);
+	font-weight: bold;
+	font-size: small;
+	margin-block-start: 0.5em;
+}
+.post footer a {
+	color: inherit;
+	text-decoration: none;
+}
+
+.post img,
+.post video {
+	display: block;
+	margin-inline: -0.5em;
+	inline-size: calc(100% + 1em);
+	max-block-size: 90vb;
+	object-fit: contain;
+}
+
+.u-bold {
+	font-weight: bold;
+}
+
+.meta {
+	color: var(--fg-tint-color);
+}
+
+.loading {
+	display: block;
+	inline-size: 100%;
+	background: var(--button-color);
+	color: inherit;
+	text-decoration: none;
+	padding: 0.5em;
+	border: 0;
+	text-align: center;
+	border-radius: 4px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+.loading:focus,
+.loading:hover {
+	background: var(--button-hover-color);
+}
+
+@media (prefers-color-scheme: dark) {
+	html {
+		--bg-color: #111;
+		--bg-tint-color: #000;
+		--fg-tint-color: #888;
+		--border-color: #222;
+		--button-color: #222;
+		--button-hover-color: #333;
+
+		background: #000;
+		color: #fff;
+	}
+}
