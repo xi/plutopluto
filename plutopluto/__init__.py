@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 
-__version__ = '1.2.0'
-
-import sys
-import os
-from time import mktime, time
 import argparse
-
-from flask import Flask, request, jsonify, abort
-from werkzeug.contrib.cache import SimpleCache
+import os
+import sys
+from time import mktime
+from time import time
 
 import feedparser
 from bs4 import BeautifulSoup
+from flask import Flask
+from flask import request
+from flask import jsonify
+from flask import abort
+from werkzeug.contrib.cache import SimpleCache
 
+__version__ = '1.2.0'
 
 app = Flask(__name__)
 cache = SimpleCache()
