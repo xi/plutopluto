@@ -19,13 +19,51 @@ __version__ = '1.2.0'
 app = Flask(__name__)
 
 
-def linebreaks(text):
-    html = (
-        text
-        .replace('\n\n', '</p><p>')
-        .replace('\n', '<br>')
-    )
-    return '<p>' + html + '</p>'
+def clean_html(s):
+    """Strip possibly dangerous HTML."""
+
+    allowed_tags = [
+        'p',
+        'a',
+        'ul',
+        'ol',
+        'li',
+        'blockquote',
+        'em',
+        'strong',
+        'img',
+        'video',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'pre',
+        'code',
+        'hr',
+        'table',
+        'tr',
+        'td',
+        'th',
+        'details',
+        'summary',
+    ]
+    allowed_attrs = ['href', 'src', 'alt', 'title']
+
+    tree = BeautifulSoup(s)
+
+    for tag in tree.find_all():
+        if tag.name not in allowed_tags:
+            if tag.name in ['script']:
+                tag.extract()
+            else:
+                tag.hidden = True
+        else:
+            for attr in set(tag.attrs) - set(allowed_attrs):
+                del tag.attrs[attr]
+
+    return str(tree)
 
 
 @functools.lru_cache
@@ -46,16 +84,16 @@ def parse(url):
         d['title'] = item.get('title')
         d['link'] = item.get('link')
         d['source'] = feed.feed.get('title')
-        d['source_link'] = feed.feed.get('link')
-        d['content'] = item.get('description', '')
-        if '<' not in d['content']:
-            d['content'] = linebreaks(d['content'])
         if 'youtube' in url:
-            thumbnail = '<a href="%s"><img alt="" src="%s" /></a>' % (
-                d['link'],
+            template = u'<img alt="%s" src="%s" />\n<div>%s</div>'
+            d['content'] = clean_html(template % (
+                item['media_content'][0]['url'],
                 item['media_thumbnail'][0]['url'],
-            )
-            d['content'] = thumbnail + d['content']
+                item['media_description']))
+        elif 'content' in item:
+            d['content'] = clean_html(item['content'][0]['value'])
+        else:
+            d['content'] = clean_html(item.get('description'))
         return d
 
     return {

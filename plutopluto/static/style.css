@@ -76,8 +76,7 @@ hr {
 	font-size: small;
 }
 
-.post header a,
-.post .title a {
+.post header a {
 	color: inherit;
 	text-decoration: none;
 }
