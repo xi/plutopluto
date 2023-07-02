@@ -1,14 +1,17 @@
 #!/usr/bin/env python
 
 import argparse
+import datetime
 import functools
 import os
 import sys
 from time import mktime
 from time import time
+from xml.sax.saxutils import escape
 
 import feedparser
-from bs4 import BeautifulSoup
+import requests
+from feedparser.sanitizer import _sanitize_html
 from flask import Flask
 from flask import request
 from flask import jsonify
@@ -29,7 +32,7 @@ def linebreaks(text):
 
 
 @functools.lru_cache
-def parse(url):
+def parse_feed(url):
     """Get feed and convert to JSON."""
 
     feed = feedparser.parse(url)
@@ -64,20 +67,72 @@ def parse(url):
     }
 
 
+@functools.lru_cache
+def parse_activity_stream(url):
+    r = requests.get(url, headers={'Accept': 'application/activity+json'})
+    r.raise_for_status()
+    data = r.json()
+    entries = []
+
+    def _parse_item(obj):
+        source = obj.get('audience', obj['attributedTo'])
+
+        content = _sanitize_html(obj.get('content', ''), 'utf-8', 'text/html')
+        for attachment in obj.get('attachment', []):
+            href = escape(attachment.get('href', attachment.get('url', '')))
+            if href:
+                ext = href.rsplit('.', 1)[-1]
+                if ext in ['jpg', 'jpeg', 'png', 'gif', 'webp']:
+                    content += f'<img src="{href}" alt="">'
+                else:
+                    content += f'<p><a href="{href}">{href}</a></p>'
+            else:
+                print(attachment)
+
+        return {
+            'id': obj['id'],
+            'title': obj.get('name', ''),
+            'link': obj.get('url', obj['id']),
+            'source': source.split('/')[-1],
+            'source_link': source,
+            'content': content,
+            'dt': datetime.datetime.fromisoformat(obj['published']).timestamp(),
+            # attachments
+        }
+
+    def _process_activity(activity):
+        if activity['type'] == 'Create':
+            entries.append(_parse_item(activity['object']))
+        elif activity['type'] == 'Announce':
+            _process_activity(activity['object'])
+
+    for activity in data['orderedItems']:
+        _process_activity(activity)
+
+    return {
+        'url': url,
+        'next': data.get('next'),
+        'entries': entries,
+    }
+
+
 @app.route('/parse', methods=['GET'])
 def _parse():
-    if 'url' in request.values:
-        url = request.values['url']
-
-        try:
-            data = parse(url)
-        except Exception as err:
-            app.logger.warning('%s: %s' % (url, err))
-            abort(500)
-
-        return jsonify(data)
-    else:
+    if 'url' not in request.values:
         abort(400)
+
+    url = request.values['url']
+
+    try:
+        if 'outbox' in url:
+            data = parse_activity_stream(url)
+        else:
+            data = parse_feed(url)
+    except Exception as err:
+        app.logger.warning('%s: %s' % (url, err))
+        abort(500)
+
+    return jsonify(data)
 
 
 @app.route('/', methods=['GET'])
