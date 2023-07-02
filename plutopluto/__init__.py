@@ -19,6 +19,15 @@ __version__ = '1.2.0'
 app = Flask(__name__)
 
 
+def linebreaks(text):
+    html = (
+        text
+        .replace('\n\n', '</p><p>')
+        .replace('\n', '<br>')
+    )
+    return '<p>' + html + '</p>'
+
+
 @functools.lru_cache
 def parse(url):
     """Get feed and convert to JSON."""
@@ -39,6 +48,8 @@ def parse(url):
         d['source'] = feed.feed.get('title')
         d['source_link'] = feed.feed.get('link')
         d['content'] = item.get('description', '')
+        if '<' not in d['content']:
+            d['content'] = linebreaks(d['content'])
         if 'youtube' in url:
             thumbnail = '<a href="%s"><img alt="" src="%s" /></a>' % (
                 d['link'],
