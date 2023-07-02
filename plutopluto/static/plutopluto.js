@@ -4,7 +4,7 @@ var loading = document.querySelector('.loading');
 
 var formatDate = function(text) {
 	var date = new Date(parseInt(text, 10) * 1000);
-	var format = 'YYYY/MM/dd hh:mm';
+	var format = 'YYYY-MM-dd hh:mm';
 
 	var o = {
 		'Y': date.getFullYear(),
