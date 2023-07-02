@@ -37,17 +37,14 @@ def parse(url):
         d['title'] = item.get('title')
         d['link'] = item.get('link')
         d['source'] = feed.feed.get('title')
+        d['source_link'] = feed.feed.get('link')
+        d['content'] = item.get('description', '')
         if 'youtube' in url:
-            template = u'<img alt="%s" src="%s" />\n<div>%s</div>'
-            d['content'] = template % (
-                item['media_content'][0]['url'],
+            thumbnail = '<a href="%s"><img alt="" src="%s" /></a>' % (
+                d['link'],
                 item['media_thumbnail'][0]['url'],
-                item['media_description'],
             )
-        elif 'content' in item:
-            d['content'] = item['content'][0]['value']
-        else:
-            d['content'] = item.get('description')
+            d['content'] = thumbnail + d['content']
         return d
 
     return {
