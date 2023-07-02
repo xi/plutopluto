@@ -24,7 +24,7 @@ a {
 	color: var(--focus-color);
 }
 
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, h6 {
 	line-height: 1.2;
 	font-weight: 500;
 	margin-block: 0 0.3em;
@@ -40,8 +40,12 @@ pre {
 	tab-size: 4;
 }
 
-p {
+p, blockquote, pre, table, ul, ol, details {
 	margin-block: 0 0.8em;
+}
+
+ol, ul {
+	padding-inline-start: 1.5rem;
 }
 
 blockquote {
@@ -91,6 +95,7 @@ hr {
 .post video {
 	display: block;
 	margin-inline: -0.5em;
+	margin-block: 0 0.8em;
 	inline-size: calc(100% + 1em);
 	max-block-size: 90vb;
 	object-fit: contain;
@@ -131,6 +136,7 @@ hr {
 		--border-color: #222;
 		--button-color: #222;
 		--button-hover-color: #333;
+		color-scheme: dark;
 
 		background: #000;
 		color: #fff;
