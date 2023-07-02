@@ -19,53 +19,6 @@ __version__ = '1.2.0'
 app = Flask(__name__)
 
 
-def clean_html(s):
-    """Strip possibly dangerous HTML."""
-
-    allowed_tags = [
-        'p',
-        'a',
-        'ul',
-        'ol',
-        'li',
-        'blockquote',
-        'em',
-        'strong',
-        'img',
-        'video',
-        'h1',
-        'h2',
-        'h3',
-        'h4',
-        'h5',
-        'h6',
-        'pre',
-        'code',
-        'hr',
-        'table',
-        'tr',
-        'td',
-        'th',
-        'details',
-        'summary',
-    ]
-    allowed_attrs = ['href', 'src', 'alt', 'title']
-
-    tree = BeautifulSoup(s)
-
-    for tag in tree.find_all():
-        if tag.name not in allowed_tags:
-            if tag.name in ['script']:
-                tag.extract()
-            else:
-                tag.hidden = True
-        else:
-            for attr in set(tag.attrs) - set(allowed_attrs):
-                del tag.attrs[attr]
-
-    return str(tree)
-
-
 @functools.lru_cache
 def parse(url):
     """Get feed and convert to JSON."""
@@ -86,14 +39,15 @@ def parse(url):
         d['source'] = feed.feed.get('title')
         if 'youtube' in url:
             template = u'<img alt="%s" src="%s" />\n<div>%s</div>'
-            d['content'] = clean_html(template % (
+            d['content'] = template % (
                 item['media_content'][0]['url'],
                 item['media_thumbnail'][0]['url'],
-                item['media_description']))
+                item['media_description'],
+            )
         elif 'content' in item:
-            d['content'] = clean_html(item['content'][0]['value'])
+            d['content'] = item['content'][0]['value']
         else:
-            d['content'] = clean_html(item.get('description'))
+            d['content'] = item.get('description')
         return d
 
     return {
