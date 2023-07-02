@@ -46,11 +46,12 @@ var appendEntries = function(entries) {
 		var li = document.createElement('li');
 		li.className = 'post';
 		li.innerHTML = template.innerHTML
-			.replace('{{source}}', escapeHTML(entry.source))
-			.replace('{{link}}', escapeHTML(entry.link))
-			.replace('{{title}}', escapeHTML(entry.title))
-			.replace('{{dt}}', escapeHTML(formatDate(entry.dt)))
-			.replace('{{{content}}}', entry.content);
+			.replaceAll('{{source}}', escapeHTML(entry.source))
+			.replaceAll('{{source_link}}', escapeHTML(entry.source_link))
+			.replaceAll('{{link}}', escapeHTML(entry.link))
+			.replaceAll('{{title}}', escapeHTML(entry.title))
+			.replaceAll('{{dt}}', escapeHTML(formatDate(entry.dt)))
+			.replaceAll('{{{content}}}', entry.content);
 		stream.append(li);
 	});
 };
