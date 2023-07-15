@@ -10,6 +10,7 @@ html {
 	background: #dae0e6;
 	color: #222;
 	line-height: 1.5;
+	font-family: sans-serif;
 }
 
 body {
@@ -73,6 +74,7 @@ hr {
 	border: 1px solid var(--border-color);
 	padding: 0.5em;
 	margin-block-end: 1em;
+	word-wrap: anywhere;
 }
 
 .post header {
