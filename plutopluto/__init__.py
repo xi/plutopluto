@@ -104,7 +104,8 @@ def parse_activity_stream(url):
         if activity['type'] == 'Create':
             entries.append(_parse_item(activity['object']))
         elif activity['type'] == 'Announce':
-            _process_activity(activity['object'])
+            if isinstance(activity['object'], dict):
+                _process_activity(activity['object'])
 
     for activity in data['orderedItems']:
         _process_activity(activity)
