@@ -23,8 +23,8 @@ setup(
     packages=['plutopluto'],
     include_package_data=True,
     install_requires=[
-        'requests',
-        'flask',
+        'aiohttp',
+        'flask[async]',
         'feedparser',
     ],
     entry_points={'console_scripts': [

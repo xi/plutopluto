@@ -2,15 +2,15 @@
 
 import argparse
 import datetime
-import functools
 import os
 import sys
 from time import mktime
 from time import time
 from xml.sax.saxutils import escape
 
+import aiohttp
 import feedparser
-import requests
+from aiohttp import web
 from feedparser.sanitizer import _sanitize_html
 from flask import Flask
 from flask import request
@@ -22,6 +22,20 @@ __version__ = '1.2.0'
 app = Flask(__name__)
 
 
+async def fetch(url, *, raw=False, **kwargs):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, **kwargs) as response:
+            if response.status == 404:
+                raise web.HTTPNotFound
+            if response.status == 429:
+                raise web.HTTPServiceUnavailable
+            response.raise_for_status()
+            if raw:
+                return await response.read()
+            else:
+                return await response.json()
+
+
 def linebreaks(text):
     html = (
         text
@@ -31,11 +45,10 @@ def linebreaks(text):
     return '<p>' + html + '</p>'
 
 
-@functools.lru_cache
-def parse_feed(url):
+async def parse_feed(url):
     """Get feed and convert to JSON."""
 
-    feed = feedparser.parse(url)
+    feed = feedparser.parse(await fetch(url, raw=True))
 
     def _parse_item(i, item):
         d = dict()
@@ -67,11 +80,8 @@ def parse_feed(url):
     }
 
 
-@functools.lru_cache
-def parse_activity_stream(url):
-    r = requests.get(url, headers={'Accept': 'application/activity+json'})
-    r.raise_for_status()
-    data = r.json()
+async def parse_activity_stream(url):
+    data = await fetch(url, headers={'Accept': 'application/activity+json'})
     entries = []
 
     def _parse_item(obj):
@@ -118,7 +128,7 @@ def parse_activity_stream(url):
 
 
 @app.route('/parse', methods=['GET'])
-def _parse():
+async def _parse():
     if 'url' not in request.values:
         abort(400)
 
@@ -126,9 +136,9 @@ def _parse():
 
     try:
         if 'outbox' in url:
-            data = parse_activity_stream(url)
+            data = await parse_activity_stream(url)
         else:
-            data = parse_feed(url)
+            data = await parse_feed(url)
     except Exception as err:
         app.logger.warning('%s: %s' % (url, err))
         abort(500)
