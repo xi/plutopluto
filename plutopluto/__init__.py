@@ -28,7 +28,9 @@ async def fetch(url, *, raw=False, **kwargs):
         async with session.get(url, **kwargs) as response:
             if response.status == 404:
                 raise web.HTTPNotFound
-            if response.status == 429:
+            elif response.status == 403:
+                raise web.HTTPForbidden
+            elif response.status == 429:
                 raise web.HTTPServiceUnavailable
             response.raise_for_status()
             if raw:
