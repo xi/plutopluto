@@ -1,9 +1,0 @@
-include README.rst
-include example.cfg
-include plutopluto/index.html
-include plutopluto/static/color.css
-include plutopluto/static/favicon.ico
-include plutopluto/static/jqlite.js
-include plutopluto/static/mustache.js
-include plutopluto/static/plutopluto.css
-include plutopluto/static/plutopluto.js

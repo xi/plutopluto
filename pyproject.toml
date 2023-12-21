@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "plutopluto"
+description = "simple feed aggregator"
+readme = "README.md"
+authors = [{name = "Tobias Bengfort", email = "tobias.bengfort@posteo.de"}]
+license = {text = "GPLv2+"}
+classifiers = [
+    "Environment :: Web Environment",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: JavaScript",
+    "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: News/Diary",
+]
+urls = {Homepage = "https://github.com/xi/plutopluto"}
+dependencies = [
+    "aiohttp",
+    "feedparser",
+]
+dynamic = ["version"]
+
+[project.scripts]
+plutopluto = "plutopluto:main"
+
+[tool.setuptools]
+packages = ["plutopluto"]
+
+[tool.setuptools.dynamic]
+version = {attr = "plutopluto.__version__"}
+
+[tool.setuptools.package-data]
+plutopluto = [
+    "index.html",
+    "static/favicon.ico",
+    "static/*.css",
+    "static/*.js",
+]
