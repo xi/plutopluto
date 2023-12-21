@@ -39,7 +39,7 @@ async def fetch(url, *, raw=False, **kwargs):
 
 def linebreaks(text):
     html = (
-        text
+        escape(text)
         .replace('\n\n', '</p><p>')
         .replace('\n', '<br>')
     )
@@ -68,9 +68,9 @@ async def parse_feed(url):
         if '<' not in d['content']:
             d['content'] = linebreaks(d['content'])
         if 'youtube' in url:
-            thumbnail = '<a href="%s"><img alt="" src="%s" /></a>' % (
-                d['link'],
-                item['media_thumbnail'][0]['url'],
+            thumbnail = '<a href="{}"><img alt="" src="{}" /></a>'.format(
+                escape(d['link']),
+                escape(item['media_thumbnail'][0]['url']),
             )
             d['content'] = thumbnail + d['content']
         return d
