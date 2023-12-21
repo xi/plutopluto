@@ -68,7 +68,7 @@ async def parse_feed(url):
         if '<' not in d['content']:
             d['content'] = linebreaks(d['content'])
         if 'youtube' in url:
-            thumbnail = '<a href="{}"><img alt="" src="{}" /></a>'.format(
+            thumbnail = '<a href="{}" tabindex="-1"><img alt="" src="{}" /></a>'.format(
                 escape(d['link']),
                 escape(item['media_thumbnail'][0]['url']),
             )
