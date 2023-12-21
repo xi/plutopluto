@@ -182,8 +182,8 @@ def parse_config(path):
     urls = []
     with open(path) as fh:
         for line in fh:
-            url = line.strip()
-            if url and not url.startswith('#'):
+            url = line.split('#', 1)[0].strip()
+            if url:
                 urls.append(url)
     return urls
 
