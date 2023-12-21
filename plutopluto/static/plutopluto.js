@@ -48,6 +48,7 @@ var appendEntries = function(entries) {
 		li.innerHTML = template.innerHTML
 			.replaceAll('{{source}}', escapeHTML(entry.source))
 			.replaceAll('{{source_link}}', escapeHTML(entry.source_link))
+			.replaceAll('{{feed_link}}', escapeHTML(entry.feed_link))
 			.replaceAll('{{link}}', escapeHTML(entry.link))
 			.replaceAll('{{title}}', escapeHTML(entry.title))
 			.replaceAll('{{dt}}', escapeHTML(formatDate(entry.dt)))
@@ -101,7 +102,10 @@ getConfig().then(config => {
 				} else if (raw.includes('{page}')) {
 					next.push(raw);
 				}
-				entries = entries.concat(data.entries);
+				data.entries.forEach(entry => {
+					entry.feed_link = '?' + new URLSearchParams({url: raw});
+					entries.push(entry);
+				});
 			});
 		});
 
