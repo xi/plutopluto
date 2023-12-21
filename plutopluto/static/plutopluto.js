@@ -2,6 +2,17 @@ var template = document.querySelector('template');
 var stream = document.querySelector('#stream');
 var loading = document.querySelector('.loading');
 
+var locked = function(fn) {
+	var lock = false;
+	return async function() {
+		if (!lock) {
+			lock = true;
+			await fn();
+			lock = false;
+		}
+	};
+};
+
 var formatDate = function(text) {
 	var date = new Date(parseInt(text, 10) * 1000);
 	var format = 'YYYY-MM-dd hh:mm';
@@ -57,76 +68,69 @@ var appendEntries = function(entries) {
 	});
 };
 
-var fetchJSON = function(url) {
-	return fetch(url).then(r => {
-		if (r.ok) {
-			return r.json();
-		} else {
-			throw r;
-		}
-	});
+var fetchJSON = async function(url) {
+	var r = await fetch(url);
+	if (r.ok) {
+		return r.json();
+	} else {
+		throw r;
+	}
 };
 
-var getConfig = function() {
+var getInitialUrls = async function() {
 	var q = new URLSearchParams(location.search);
 	var urls = q.getAll('url');
 	if (urls.length) {
-		return Promise.resolve({'urls': urls});
+		return urls;
 	} else {
-		return fetchJSON('/config');
+		var config = await fetchJSON('/config');
+		return config.urls;
 	}
-}
+};
 
-getConfig().then(config => {
-	var entries = [];
-	var page = 0;
-	var next = config.urls;
+var page = 0;
+var next = [];
+var entries = [];
 
-	var loadNextPageLock = false;
-	var loadNextPage = function() {
-		if (loadNextPageLock) {
-			return;
+var loadNextPage = async function() {
+	var current = next;
+	next = [];
+
+	await Promise.allSettled(current.map(async raw => {
+		var url = raw.replace('{page}', page);
+		var feed = await fetchJSON('/parse?' + new URLSearchParams({url: url}));
+
+		if (feed.next) {
+			next.push(feed.next);
+		} else if (raw.includes('{page}')) {
+			next.push(raw);
 		}
 
-		loadNextPageLock = true;
-
-		var current = next;
-		next = [];
-
-		var promises = current.map(raw => {
-			var url = raw.replace('{page}', page);
-
-			return fetchJSON('/parse?' + new URLSearchParams({url: url})).then(data => {
-				if (data.next) {
-					next.push(data.next);
-				} else if (raw.includes('{page}')) {
-					next.push(raw);
-				}
-				data.entries.forEach(entry => {
-					entry.feed_link = '?' + new URLSearchParams({url: raw});
-					entries.push(entry);
-				});
-			});
+		feed.entries.forEach(entry => {
+			entry.feed_link = '/?' + new URLSearchParams({url: raw});
+			entries.push(entry);
 		});
+	}));
 
-		Promise.all(promises).finally(() => {
-			// now that we have entries, we can show some
-			renderMore();
-			loadNextPageLock = false;
-		});
+	entries.sort((a, b) => b.dt - a.dt);
+	page++;
+};
 
-		page++;
-	};
+var renderMore = locked(async function() {
+	if (entries.length === 0) {
+		await loadNextPage();
+	}
+	if (entries.length === 0) {
+		return;
+	}
+	appendEntries(entries.splice(0, 10));
+	if (entries.length < 30) {
+		await loadNextPage();
+	}
+});
 
-	var renderMore = function() {
-		entries.sort((a, b) => {
-			return b.dt - a.dt;
-		});
-		appendEntries(entries.splice(0, 10));
-		if (entries.length < 30) {
-			loadNextPage();
-		}
-	};
+var main = async function() {
+	next = await getInitialUrls();
 
 	document.addEventListener('scroll', () => {
 		if (bottomDistance() < 4000) {
@@ -137,5 +141,7 @@ getConfig().then(config => {
 	loading.addEventListener('click', renderMore);
 
 	// load initial content
-	loadNextPage();
-});
+	renderMore();
+};
+
+main();
