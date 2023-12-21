@@ -166,6 +166,7 @@ def main():
     parser.add_argument('-c', '--config', metavar='FILE')
     parser.add_argument('urls', metavar='URL', nargs='*',
         help='full feed url, optionally with a {page} placeholder')
+    parser.add_argument('--port', type=int, default=8000)
     args = parser.parse_args()
 
     config_name = '.plutopluto.cfg'
@@ -186,7 +187,7 @@ def main():
         parser.print_usage()
         sys.exit(1)
 
-    app.run(app.config.get('HOST'), app.config.get('PORT'))
+    app.run('localhost', args.port)
 
 
 if __name__ == '__main__':
