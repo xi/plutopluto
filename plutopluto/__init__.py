@@ -2,6 +2,8 @@
 
 import argparse
 import datetime
+import json
+import logging
 import sys
 from pathlib import Path
 from time import mktime
@@ -12,14 +14,13 @@ import aiohttp
 import feedparser
 from aiohttp import web
 from feedparser.sanitizer import _sanitize_html
-from flask import Flask
-from flask import request
-from flask import jsonify
-from flask import abort
 
 __version__ = '1.2.0'
 
-app = Flask(__name__)
+logger = logging.getLogger(__name__)
+
+BASE_DIR = Path(__file__).parent
+URLS = []
 
 
 async def fetch(url, *, raw=False, **kwargs):
@@ -127,12 +128,11 @@ async def parse_activity_stream(url):
     }
 
 
-@app.route('/parse', methods=['GET'])
-async def _parse():
-    if 'url' not in request.values:
-        abort(400)
+async def route_parse(request):
+    if 'url' not in request.query:
+        raise web.HTTPBadRequest
 
-    url = request.values['url']
+    url = request.query['url']
 
     try:
         if 'outbox' in url:
@@ -140,23 +140,21 @@ async def _parse():
         else:
             data = await parse_feed(url)
     except Exception as err:
-        app.logger.warning('%s: %s' % (url, err))
-        abort(500)
+        logger.warning('%s: %s' % (url, err))
+        raise web.HTTPInternalServerError from err
 
-    return jsonify(data)
-
-
-@app.route('/', methods=['GET'])
-def index():
-    with open(os.path.join(app.root_path, 'index.html')) as fh:
-        return fh.read()
+    body = json.dumps(data, sort_keys=True)
+    return web.Response(body=body, content_type='application/json')
 
 
-@app.route('/config', methods=['GET'])
-def config():
-    return jsonify({
-        'urls': app.config['URLS']
-    })
+def route_index(request):
+    with open(BASE_DIR / 'index.html') as fh:
+        return web.Response(body=fh.read(), content_type='text/html')
+
+
+def route_config(request):
+    body = json.dumps({'urls': URLS}, sort_keys=True)
+    return web.Response(body=body, content_type='application/json')
 
 
 def parse_config(path):
@@ -188,22 +186,25 @@ def get_config(args, name='.plutopluto.cfg'):
 def main():
     parser = argparse.ArgumentParser(description='simple feed aggregator')
     parser.add_argument('--version', '-V', action='version', version=__version__)
-    parser.add_argument('-d', '--debug', action='store_true')
     parser.add_argument('-c', '--config', metavar='FILE', type=Path)
     parser.add_argument('urls', metavar='URL', nargs='*',
         help='full feed url, optionally with a {page} placeholder')
     parser.add_argument('--port', type=int, default=8000)
     args = parser.parse_args()
 
-    app.debug = args.debug
-    app.config['URLS'] = get_config(args)
-
-    if not app.config['URLS']:
-        print("Error: No urls provided")
+    global URLS
+    URLS = get_config(args)
+    if not URLS:
+        print('Error: No urls provided')
         parser.print_usage()
         sys.exit(1)
 
-    app.run('localhost', args.port)
+    app = web.Application()
+    app.router.add_static('/static', BASE_DIR / 'static')
+    app.router.add_route('GET', '', route_index)
+    app.router.add_route('GET', '/parse', route_parse)
+    app.router.add_route('GET', '/config', route_config)
+    web.run_app(app, host='localhost', port=args.port)
 
 
 if __name__ == '__main__':

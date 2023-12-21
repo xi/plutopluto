@@ -24,7 +24,6 @@ setup(
     include_package_data=True,
     install_requires=[
         'aiohttp',
-        'flask[async]',
         'feedparser',
     ],
     entry_points={'console_scripts': [
