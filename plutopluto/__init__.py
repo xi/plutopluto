@@ -73,6 +73,16 @@ async def parse_feed(url):
                 escape(item['media_thumbnail'][0]['url']),
             )
             d['content'] = thumbnail + d['content']
+        elif 'reddit' in url:
+            d['content'] = (
+                d['content']
+                .replace('<table>', '')
+                .replace('</table>', '')
+                .replace('<tr>', '')
+                .replace('</tr>', '')
+                .replace('<td>', '')
+                .replace('</td>', '')
+            )
         return d
 
     links = {}
