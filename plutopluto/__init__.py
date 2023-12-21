@@ -140,7 +140,7 @@ async def route_parse(request):
         else:
             data = await parse_feed(url)
     except Exception as err:
-        logger.warning('%s: %s' % (url, err))
+        logger.warning(f'{url}: {err}')
         raise web.HTTPInternalServerError from err
 
     body = json.dumps(data, sort_keys=True)
@@ -195,7 +195,7 @@ def main():
     global URLS
     URLS = get_config(args)
     if not URLS:
-        print('Error: No urls provided')
+        logger.error('Error: No urls provided')
         parser.print_usage()
         sys.exit(1)
 
