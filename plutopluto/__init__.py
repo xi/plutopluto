@@ -75,8 +75,13 @@ async def parse_feed(url):
             d['content'] = thumbnail + d['content']
         return d
 
+    links = {}
+    for link in feed.feed.get('links', []):
+        links[link['rel']] = link['href']
+
     return {
         'url': url,
+        'next': links.get('next') or links.get('prev-archive'),
         'entries': [_parse_item(i, item) for i, item in enumerate(feed.entries)],
     }
 
