@@ -23,11 +23,9 @@ setup(
     packages=['plutopluto'],
     include_package_data=True,
     install_requires=[
-        'argparse',
+        'requests',
         'flask',
-        'werkzeug',
         'feedparser',
-        'beautifulsoup4',
     ],
     entry_points={'console_scripts': [
         'plutopluto=plutopluto:main',
