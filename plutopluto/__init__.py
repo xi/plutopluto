@@ -2,8 +2,8 @@
 
 import argparse
 import datetime
-import os
 import sys
+from pathlib import Path
 from time import mktime
 from time import time
 from xml.sax.saxutils import escape
@@ -159,28 +159,44 @@ def config():
     })
 
 
+def parse_config(path):
+    urls = []
+    with open(path) as fh:
+        for line in fh:
+            url = line.strip()
+            if url and not url.startswith('#'):
+                urls.append(url)
+    return urls
+
+
+def get_config(args, name='.plutopluto.cfg'):
+    local_config = Path(name)
+    home_config = Path.home() / name
+
+    if args.urls:
+        return args.urls
+    elif args.config:
+        return parse_config(args.config)
+    elif local_config.exists():
+        return parse_config(local_config)
+    elif home_config.exists():
+        return parse_config(home_config)
+    else:
+        return []
+
+
 def main():
     parser = argparse.ArgumentParser(description='simple feed aggregator')
     parser.add_argument('--version', '-V', action='version', version=__version__)
     parser.add_argument('-d', '--debug', action='store_true')
-    parser.add_argument('-c', '--config', metavar='FILE')
+    parser.add_argument('-c', '--config', metavar='FILE', type=Path)
     parser.add_argument('urls', metavar='URL', nargs='*',
         help='full feed url, optionally with a {page} placeholder')
     parser.add_argument('--port', type=int, default=8000)
     args = parser.parse_args()
 
-    config_name = '.plutopluto.cfg'
-    local_config = os.path.abspath(config_name)
-    home_config = os.path.expanduser('~/' + config_name)
-
-    if args.config:
-        app.config.from_pyfile(os.path.abspath(args.config))
-    elif os.path.exists(local_config):
-        app.config.from_pyfile(local_config)
-    elif os.path.exists(home_config):
-        app.config.from_pyfile(home_config)
     app.debug = args.debug
-    app.config['URLS'] = args.urls + app.config.get('URLS', [])
+    app.config['URLS'] = get_config(args)
 
     if not app.config['URLS']:
         print("Error: No urls provided")
