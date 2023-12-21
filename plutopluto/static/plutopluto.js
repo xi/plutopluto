@@ -102,17 +102,14 @@ getConfig().then(config => {
 
 		Promise.all(promises).finally(() => {
 			// now that we have entries, we can show some
-			if (stream.children.length === 0) {
-				loadMore();
-			}
-
+			renderMore();
 			loadNextPageLock = false;
 		});
 
 		page++;
 	};
 
-	var loadMore = function() {
+	var renderMore = function() {
 		entries.sort((a, b) => {
 			return b.dt - a.dt;
 		});
@@ -124,11 +121,11 @@ getConfig().then(config => {
 
 	document.addEventListener('scroll', () => {
 		if (bottomDistance() < 4000) {
-			loadMore();
+			renderMore();
 		}
 	}, {passive: true});
 
-	loading.addEventListener('click', loadMore);
+	loading.addEventListener('click', renderMore);
 
 	// load initial content
 	loadNextPage();
