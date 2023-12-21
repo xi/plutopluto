@@ -23,9 +23,13 @@ BASE_DIR = Path(__file__).parent
 URLS = []
 
 
-async def fetch(url, *, raw=False, **kwargs):
+async def fetch(url, *, headers={}, raw=False, **kwargs):
     async with aiohttp.ClientSession() as session:
-        async with session.get(url, **kwargs) as response:
+        async with session.get(
+            url,
+            headers={'User-agent': 'plutopluto', **headers},
+            **kwargs,
+        ) as response:
             if response.status == 404:
                 raise web.HTTPNotFound
             elif response.status == 403:
