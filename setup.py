@@ -7,7 +7,7 @@ from setuptools import setup
 DIRNAME = os.path.abspath(os.path.dirname(__file__))
 rel = lambda *parts: os.path.abspath(os.path.join(DIRNAME, *parts))
 
-README = open(rel('README.rst')).read()
+README = open(rel('README.md')).read()
 INIT = open(rel('plutopluto', '__init__.py')).read()
 VERSION = re.search("__version__ = '([^']+)'", INIT).group(1)
 
