@@ -13,6 +13,10 @@ html {
 	font-family: sans-serif;
 }
 
+[hidden] {
+	display: none !important;
+}
+
 body {
 	max-inline-size: 45em;
 	margin-block: 0;

@@ -121,6 +121,7 @@ var renderMore = locked(async function() {
 		await loadNextPage();
 	}
 	if (entries.length === 0) {
+		loading.hidden = true;
 		return;
 	}
 	appendEntries(entries.splice(0, 10));
