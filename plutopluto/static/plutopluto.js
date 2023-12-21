@@ -79,6 +79,7 @@ var getConfig = function() {
 getConfig().then(config => {
 	var entries = [];
 	var page = 0;
+	var next = config.urls;
 
 	var loadNextPageLock = false;
 	var loadNextPage = function() {
@@ -88,14 +89,18 @@ getConfig().then(config => {
 
 		loadNextPageLock = true;
 
-		var promises = config.urls.map(url => {
-			if (url.includes('{page}')) {
-				url = url.replace('{page}', page);
-			} else if (page !== 0) {
-				return;
-			}
+		var current = next;
+		next = [];
+
+		var promises = current.map(raw => {
+			var url = raw.replace('{page}', page);
 
 			return fetchJSON('/parse?' + new URLSearchParams({url: url})).then(data => {
+				if (data.next) {
+					next.push(data.next);
+				} else if (raw.includes('{page}')) {
+					next.push(raw);
+				}
 				entries = entries.concat(data.entries);
 			});
 		});
