@@ -66,7 +66,17 @@ var fetchJSON = function(url) {
 	});
 };
 
-fetchJSON('/config').then(config => {
+var getConfig = function() {
+	var q = new URLSearchParams(location.search);
+	var urls = q.getAll('url');
+	if (urls.length) {
+		return Promise.resolve({'urls': urls});
+	} else {
+		return fetchJSON('/config');
+	}
+}
+
+getConfig().then(config => {
 	var entries = [];
 	var page = 0;
 
