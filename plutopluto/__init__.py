@@ -222,9 +222,9 @@ def main():
 
     app = web.Application()
     app.router.add_static('/static', BASE_DIR / 'static')
-    app.router.add_route('GET', '', route_index)
-    app.router.add_route('GET', '/parse', route_parse)
-    app.router.add_route('GET', '/config', route_config)
+    app.router.add_get('', route_index)
+    app.router.add_get('/parse', route_parse)
+    app.router.add_get('/config', route_config)
     web.run_app(app, host='localhost', port=args.port)
 
 
